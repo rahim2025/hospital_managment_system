@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="info_edit.css">
+    <title>Edit Nurse</title>
+  </head>
+  <body>
+    <h3>Edit Information for  <%= nurse.name %> </h3>
+
+    <form method="post" action="/nurse/<%= nurse.nurse_id %>/edit?_method=PATCH">
+      <textarea name="phone_num" ><%= nurse.phone_num %></textarea>
+      <textarea name="duty_day"  ><%= nurse.working_day %></textarea>
+      <textarea name="duty_time" ><%= nurse.working_time %></textarea>
+      <textarea name="duty_floor"><%= nurse.working_floor %></textarea>
+      <textarea name="address"><%= nurse.address %></textarea>
+      
+      <button>Submit</button>
+    </form>
+  </body>
+</html>

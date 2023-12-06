@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+</head>
+<body>
+
+<h1>Employee Management</h1>
+
+
+<table border="1">
+    <tr>
+        <th>Employee ID</th>
+        <th>Name</th>
+        <th>Employee Type</th>
+        <th>Doctor ID</th>
+        <th>Nurse ID</th>
+        <th>Salary</th>
+        <th>Phone Number</th>
+        <th>Address</th>
+        <th>Date of Birth</th>
+        <th>NID</th>
+        <th>Contract</th>
+        <th>Actions</th>
+    </tr>
+    <% employees.forEach(employee => { %>
+        <tr>
+            <td><%= employee.employee_id %></td>
+            <td><%= employee.name %></td>
+            <td><%= employee.emp_type %></td>
+            <td><%= employee.doctor_id %></td>
+            <td><%= employee.nurse_id %></td>
+            <td><%= employee.salary %></td>
+            <td><%= employee.phone_num %></td>
+            <td><%= employee.address %></td>
+            <td><%= employee.date_of_birth %></td>
+            <td><%= employee.nid %></td>
+            <td><%= employee.contract %></td>
+            <td>
+                <!-- Add any actions (edit, delete) as needed -->
+                <a href="/employee/<%= employee.employee_id %>/edit">Edit</a>
+                <form action="/employee/<%= employee.employee_id %>" method="POST" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    <% }); %>
+</table>
+
+<!-- Form to add a new employee -->
+<form action="/employee/add" method="POST">
+    <label for="name">Name:</label>
+    <input type="text" name="name" required><br>
+
+    <!-- Add other input fields based on your table structure -->
+
+    <button type="submit">Add Employee</button>
+</form>
+
+</body>
+</html>

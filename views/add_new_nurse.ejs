@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="add_new_doctor.css">
+    <title>Add New Nurse</title>
+</head>
+<body>
+    <h1>Add New Nurse</h1>
+    <form action="/nurse/add_new_nurse" method="post">
+        <label for="nurse_id">Nurse ID:</label>
+        <input type="text" id="nurse_id" name="nurse_id" required>
+        <br>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="duty_floor">Duty Floor:</label>
+        <input type="text" id="duty_floor" name="duty_floor">
+        <br>
+        <label for="duty_day">Duty Day:</label>
+        <input type="text" id="duty_day" name="duty_day">
+        <br>
+        <label for="duty_time">Duty Time:</label>
+        <input type="text" id="duty_time" name="duty_time">
+        <br>
+        <label for="phone_num">Phone Number:</label>
+        <input type="text" id="phone_num" name="phone_num" required>
+        <br>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address">
+        <br>
+        <button type="submit">Add Nurse</button>
+    </form>
+</body>
+</html>

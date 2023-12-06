@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admit Patient</title>
+    <link rel="stylesheet" href="admit_into_room.css">
+</head>
+<body>
+
+<h1>Admit Patient</h1>
+
+<form action="/admit_into_room" method="POST">
+    <label for="room_no">Room No:</label>
+    <input type="text" name="room_no" required><br>
+
+    <label for="patient_id">Patient ID:</label>
+    <input type="text" name="patient_id" required><br>
+
+    <label for="doctor_id">Doctor ID:</label>
+    <input type="text" name="doctor_id" required><br>
+
+    <label for="floor_no">Floor No:</label>
+    <input type="text" name="floor_no" required><br>
+
+    <label for="building_no">Building No:</label>
+    <input type="text" name="building_no" required><br>
+
+    
+    <label for="room_type">Room Type:</label>
+    <select name="location_type">
+        <option value="room">Room</option>
+        <option value="cabin">Cabin</option>
+        <option value="operation_theatre">Operation Theatre</option>
+    </select><br>
+
+    <button type="submit">Admit Patient</button>
+</form>
+
+
+</body>
+</html>
+

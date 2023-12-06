@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="doctor_table.css"> 
+    <title>All Patient List</title>
+</head>
+<body>
+    <header>
+        <h1>ALL Nurse LIST</h1>
+    </header>
+
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Duty floor</th>
+            <th>Duty day</th>
+            <th>Duty time</th>
+            <th>Phone No</th>
+            <th>Address</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        <% for(nurse of nurses) { %>
+            <tr>
+                <td><%= nurse.nurse_id %></td>
+                <td><%= nurse.name %></td>
+                <td><%= nurse.duty_floor %></td>
+                <td><%= nurse.duty_day %></td>
+                <td><%= nurse.duty_time %></td>
+                <td><%= nurse.phone_num %></td>
+                <td><%= nurse.address %></td>
+                <td>
+                    <form method="get" action="/nurse/<%= nurse.nurse_id %>/edit">
+                        <button>Edit Information</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="/nurse/<%= nurse.nurse_id %>/?_method=DELETE ">
+                        <button>Delete</button>
+                    </form>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+    <form method="get" action="/nurse/add_new_nurse">
+        <button>Add new nurse</button>
+    </form>
+</body>
+</html>

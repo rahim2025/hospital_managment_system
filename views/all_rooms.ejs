@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Rooms Information</title>
+  <link rel="stylesheet" href="doctor_table.css">
+</head>
+<body>
+  <h1>All Rooms Information</h1>
+  <table border="1">
+    <tr>
+      <th>Room Number</th>
+      <th>Patient ID</th>
+      <th>Doctor ID</th>
+      <th>Floor Number</th>
+      <th>Building Number</th>
+      <th>Delete</th>
+    </tr>
+    <% rooms.forEach(room => { %>
+      <tr>
+        <td><%= room.room_no %></td>
+        <td><%= room.patient_id %></td>
+        <td><%= room.doctor_id %></td>
+        <td><%= room.floor_no %></td>
+        <td><%= room.building_no %></td>
+        <td>
+            <form method="post" action="/room/<%= room.patient_id %>/?_method=DELETE ">
+                <button>Delete</button>
+            </form>
+        </td>
+      </tr>
+    <% }); %>
+  </table>
+</body>
+</html>
