@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Ambulance Record</title>
+    <link rel="stylesheet" href="doctor_table.css">
+</head>
+<body>
+    <h1>Add New Ambulance Record</h1>
+    <form action="/ambulance/add_new_record" method="POST">
+        <label for="patient_id">Patient ID:</label>
+        <input type="text" id="patient_id" name="patient_id">
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" name="destination">
+        <label for="cost">Cost:</label>
+        <input type="text" id="cost" name="cost">
+        <button type="submit">Add Ambulance Record</button>
+    </form>
+</body>
+</html>

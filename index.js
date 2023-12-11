@@ -131,25 +131,41 @@ app.delete("/doctor/:id/", (req, res) => {
 
 // Add new doctor
 app.get("/doctor/add_new_doctor",(req,res) =>{
-    res.render("add_new_doctor.ejs");
+  res.render("add_new_doctor.ejs");
 
 })
 
 app.post("/doctor/add_new_doctor", (req, res) => {
-    let { doctor_id:doctor_id, name:name, gender:gender, phone_num:phone_num, email:email, 
-        specialization: specialization, qualification:qualification,charge: charge } = req.body;
-  
-    let q = `INSERT INTO doctors (doctor_id, name, gender, phone_num, email, specialization, qualification, charge) 
-             VALUES ('${doctor_id}', '${name}', '${gender}', '${phone_num}', '${email}', '${specialization}', '${qualification}', ${charge})`;
-  
-    try {
+  let {
+      doctor_id,
+      name,
+      gender,
+      phone_num,
+      email,
+      specialization,
+      qualification,
+      charge
+  } = req.body;
+
+  let q = `INSERT INTO doctors (doctor_id, name, gender, phone_num, email, specialization, qualification, charge) 
+           VALUES ('${doctor_id}', '${name}', '${gender}', '${phone_num}', '${email}', '${specialization}', '${qualification}', ${charge})`;
+
+  try {
       connection.query(q, (err, result) => {
-        if (err) throw err;
-        res.redirect("/all_doctor_list"); 
+          if (err) throw err;
+
+          let employeeQ = `INSERT INTO employees (employee_id, name, emp_type, phone_num, address, date_of_birth, nid, contract) 
+                          VALUES ('${doctor_id}', '${name}', 'Doctor', '${phone_num}', '', '', '', '')`;
+
+          connection.query(employeeQ, (err, empResult) => {
+              if (err) throw err;
+
+              res.redirect("/all_doctor_list");
+          });
       });
-    } catch (err) {
-        res.send("error found");
-    }
+  } catch (err) {
+      res.send("error found");
+  }
 });
 
 //PATIENT  START
@@ -306,21 +322,37 @@ app.get("/nurse/add_new_nurse", (req, res) => {
     res.render("add_new_nurse.ejs"); // 
   });
   
-app.post("/nurse/add_new_nurse", (req, res) => {
-    let { nurse_id, name, duty_floor, duty_day, duty_time, phone_num, address } = req.body;
-  
+  app.post("/nurse/add_new_nurse", (req, res) => {
+    let {
+        nurse_id,
+        name,
+        duty_floor,
+        duty_day,
+        duty_time,
+        phone_num,
+        address
+    } = req.body;
+
     let q = `INSERT INTO nurses (nurse_id, name, duty_floor, duty_day, duty_time, phone_num, address) 
              VALUES ('${nurse_id}', '${name}', '${duty_floor}', '${duty_day}', '${duty_time}', '${phone_num}', '${address}')`;
-  
+
     try {
-      connection.query(q, (err, result) => {
-        if (err) throw err;
-        res.redirect("/all_nurse_list");
-      });
+        connection.query(q, (err, result) => {
+            if (err) throw err;
+
+            let employeeQ = `INSERT INTO employees (employee_id, name, emp_type, phone_num, address, date_of_birth, nid, contract) 
+                            VALUES ('${nurse_id}', '${name}', 'Nurse', '${phone_num}', '', '', '', '')`;
+
+            connection.query(employeeQ, (err, empResult) => {
+                if (err) throw err;
+
+                res.redirect("/all_nurse_list");
+            });
+        });
     } catch (err) {
-      res.send("Error occurred while adding a new nurse");
+        res.send("Error occurred while adding a new nurse");
     }
-  });
+});
 
   //-------Appointment---------------------------//
 // List all appointments
@@ -365,9 +397,19 @@ app.get("/appointment/add_new_appointment", (req, res) => {
     try {
       connection.query(q, (err, result) => {
         if (err) throw err;
+
+        let newq= `UPDATE patients
+        SET total_cost = total_cost + ${visiting_fee}
+        WHERE patient_id = '${patient_id}' `;
+
+        connection.query(newq, (err, result) => {
+          if (err) throw err;
+        
+        
         res.redirect("/all_appointments");
       });
-    } catch (err) {
+    });
+   } catch (err) {
       res.status(500).send("Error occurred while adding a new appointment");
     }
   });
@@ -397,49 +439,27 @@ app.get('/admit_into_room', (req, res) => {
   res.render('admit_into_room.ejs');
 });
 
-app.post('/admit_into_room', (req, res) => {
-  const { room_no, patient_id, doctor_id, floor_no, building_no, room_type } = req.body;
-
-  let q;
-  if (room_type === 'room') {
-    q = 'INSERT INTO room (room_no, patient_id, doctor_id, floor_no, building_no) VALUES (?, ?, ?, ?, ?)';
-  } else if (room_type === 'cabin') {
-    q = 'INSERT INTO cabin (cabin_no, patient_id, doctor_id, floor_no, building_no) VALUES (?, ?, ?, ?, ?)';
-  } else if (room_type === 'operation_theatre') {
-    q = 'INSERT INTO operation_theatre (operation_theatre_no, patient_id, doctor_id, floor_no, building_no) VALUES (?, ?, ?, ?, ?)';
-  } else {
-    res.status(400).send('Invalid location type');
-    return;
-  }
-
-  const values = [room_no, patient_id, doctor_id, floor_no, building_no];
-
-  connection.query(sql, values, (err, result) => {
-    if (err) {
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-    console.log('Patient added to room');
-    res.redirect('/room_information');
-  });
-});
-
 
 //----sHOW ALL ROOMS---//
 app.get('/all_rooms', (req, res) => {
-  const q = 'SELECT * FROM room';
+  
+  connection.query('SELECT * FROM cabins', (error1, result1) => {
+    if (error1) throw error1;
 
-  connection.query(q, (err, rows) => {
-    if (err) {
-      console.error('Error fetching room information: ' + err.message);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
+    
+    connection.query('SELECT * FROM icu', (error2, result2) => {
+      if (error2) throw error2;
 
-    res.render('all_rooms.ejs', { rooms: rows });
+      
+      connection.query('SELECT * FROM operation_theatre', (error3, result3) => {
+        if (error3) throw error3;
+
+        
+        res.render('all_rooms', { result1, result2, result3 });
+      });
+    });
   });
 });
-
 //----DELETE PATIENCE FROM ROOM--------//
 app.delete("/room/:id/", (req, res) => {
   let { id } = req.params;
@@ -452,5 +472,301 @@ app.delete("/room/:id/", (req, res) => {
       });
   } catch (err) {
       res.send("Error deleting nurse");
+  }
+});
+
+//INSERT
+app.get('/insert-rooms', (req, res) => {
+  res.render('insert-rooms');
+});
+
+// Insert data for Cabins
+app.post('/insert-cabin', (req, res) => {
+  const { room_no, patient_id, doctor_id, cost, admit_date } = req.body;
+
+  const q = `INSERT INTO cabins (room_no, patient_id, doctor_id, cost, admit_date) VALUES (?, ?, ?, ?, ?)`;
+  const values = [room_no, patient_id, doctor_id, cost, admit_date];
+
+  try {
+    connection.query(q, values, (err, result) => {
+      if (err) throw err;  
+
+      let newq= `UPDATE patients
+      SET total_cost = total_cost + ${cost}
+      WHERE patient_id = '${patient_id}' `;
+
+      connection.query(newq, (err, result) => {
+        if (err) throw err;
+        
+      res.redirect("/all_rooms");
+      });
+    });
+  } catch (err) {
+    res.status(500).send('Error occurred while processing request');
+  }
+});
+
+// Insert data for ICU
+app.post('/insert-icu', (req, res) => {
+  const { room_no, patient_id, doctor_id, cost, admit_date } = req.body;
+
+  const q = `INSERT INTO icu (room_no, patient_id, doctor_id, cost, admit_date) VALUES (?, ?, ?, ?, ?)`;
+  const values = [room_no, patient_id, doctor_id, cost, admit_date];
+
+  try {
+    connection.query(q, values, (err, result) => {
+      if (err) throw err;  
+
+      let newq= `UPDATE patients
+      SET total_cost = total_cost + ${cost}
+      WHERE patient_id = '${patient_id}' `;
+
+      connection.query(newq, (err, result) => {
+        if (err) throw err;
+        
+      res.redirect("/all_rooms");
+      });
+    });
+  } catch (err) {
+    res.status(500).send('Error occurred while processing request');
+  }
+});
+
+// Insert data for Operation Theatre
+app.post('/insert-operation-room', (req, res) => {
+  const { room_no, patient_id, doctor_id, cost, admit_date } = req.body;
+
+  const q = `INSERT INTO operation_theatre (room_no, patient_id, doctor_id, cost, admit_date) VALUES (?, ?, ?, ?, ?)`;
+  const values = [room_no, patient_id, doctor_id, cost, admit_date];
+
+  try {
+    connection.query(q, values, (err, result) => {
+      if (err) throw err;  
+
+      let newq= `UPDATE patients
+      SET total_cost = total_cost + ${cost}
+      WHERE patient_id = '${patient_id}' `;
+
+      connection.query(newq, (err, result) => {
+        if (err) throw err;
+        
+      res.redirect("/all_rooms");
+      });
+    });
+  } catch (err) {
+    res.status(500).send('Error occurred while processing request');
+  }
+});
+
+
+//Employee
+
+app.get("/all_employee",(req,res) =>{
+  q="SELECT * FROM employees";
+    try{
+        connection.query(q,(err,employees) =>{
+            if(err) throw err;
+            res.render("show_all_employee_list.ejs",{employees});
+        });
+
+
+    }catch(err){
+        res.status(500).send("Error deleting doctor");
+    }
+})
+
+//Edit
+// Edit employee information
+app.get("/employee/:id/edit", (req, res) => {
+  let { id } = req.params;
+  let q = `SELECT * FROM employees WHERE employee_id='${id}'`;
+
+  try {
+      connection.query(q, (err, result) => {
+          if (err) throw err;
+          let employee = result[0];
+          res.render("employee_info_edit.ejs", { employee });
+      });
+  } catch (err) {
+      res.status(500).send("Error fetching employee data");
+  }
+});
+
+app.patch("/employee/:id/edit", (req, res) => {
+  const { id } = req.params;
+  const { contract,nid, address, salary } = req.body;
+
+  const q = `UPDATE employees SET contract='${contract}',nid='${nid}', address='${address}', salary='${salary}' WHERE employee_id='${id}'`;
+
+  connection.query(q, (err, result) => {
+      if (err) {
+          res.status(500).send("Error updating employee information");
+      } else {
+          res.redirect("/all_employee"); 
+      }
+  });
+});
+
+
+///lab_test /
+
+
+app.get('/lab_tests/home', (req, res) => {
+  res.render('lab_tests_home.ejs');
+});
+
+app.get('/admit_into_room', (req, res) => {
+  res.render('admit_into_room.ejs');
+});
+
+//-- all lab test
+app.get("/all/lab_tests", (req, res) => {
+  q = "SELECT * FROM lab_tests";
+  try {
+      connection.query(q, (err, labTests) => {
+          if (err) throw err;
+          res.render("lab_test_list.ejs", { labTests });
+      });
+  } catch (err) {
+      res.status(500).send("Error fetching lab tests");
+  }
+});
+
+//Edit
+app.get("/lab_test/:id/edit", (req, res) => {
+  let { id } = req.params;
+  let q = `SELECT * FROM lab_tests WHERE test_id='${id}'`;
+
+  try {
+      connection.query(q, (err, result) => {
+          if (err) throw err;
+          let test = result[0];
+          res.render("lab_test_info_edit.ejs", { test });
+      });
+  } catch (err) {
+      res.status(500).send("Error editing lab test");
+  }
+});
+
+//update
+app.patch("/lab_test/:id/edit", (req, res) => {
+  let { id } = req.params;
+  let { test_name, cost, description } = req.body;
+
+  let q1 = `UPDATE lab_tests SET test_name='${test_name}', cost=${cost}, description='${description}' WHERE test_id='${id}'`;
+
+  try {
+      connection.query(q1, (err, result) => {
+          if (err) throw err;
+          res.redirect("/all_lab_tests");
+      });
+  } catch (err) {
+      res.status(500).send("Error updating lab test");
+  }
+});
+
+//delete
+app.delete("/lab_test/:id/", (req, res) => {
+  let { id } = req.params;
+
+  let q1 = `DELETE FROM lab_tests WHERE test_id='${id}'`;
+
+  try {
+      connection.query(q1, (err, result) => {
+          if (err) throw err;
+          res.redirect("/all_lab_tests");
+      });
+  } catch (err) {
+      res.status(500).send("Error deleting lab test");
+  }
+});
+
+//insert
+app.get("/lab_test/add_new_test", (req, res) => {
+  res.render("add_new_lab_test.ejs");
+});
+
+app.post("/lab_test/add_new_test", (req, res) => {
+  let { test_id, patient_id, test_name, cost, description } = req.body;
+
+  let q = `INSERT INTO lab_tests (test_id, patient_id, test_name, cost, description) VALUES ('${test_id}', '${patient_id}', '${test_name}', ${cost}, '${description}')`;
+
+  try {
+      connection.query(q, (err, result) => {
+          if (err) throw err;
+          let newq= `UPDATE patients
+          SET total_cost = total_cost + ${cost}
+          WHERE patient_id = '${patient_id}' `;
+
+          connection.query(newq, (err, result) => {
+            if (err) throw err;
+
+
+          res.redirect("/all/lab_tests");
+      });
+      });
+  } catch (err) {
+      res.status(500).send("Error adding new lab test");
+  }
+});
+
+//ambulance
+app.get("/all_ambulance_record", (req, res) => {
+  q = "SELECT * FROM ambulance";
+  try {
+      connection.query(q, (err, ambulanceRecords) => {
+          if (err) throw err;
+          res.render("ambulance_record_list.ejs", { ambulanceRecords });
+      });
+  } catch (err) {
+      res.status(500).send("Error fetching ambulance records");
+  }
+});
+//Hire ambulance
+app.get("/ambulance/add_new_record", (req, res) => {
+  res.render("add_new_ambulance_record.ejs");
+});
+
+app.post("/ambulance/add_new_record", (req, res) => {
+  let { patient_id, destination, cost } = req.body;
+
+  let q = `INSERT INTO ambulance (patient_id, destination, cost) VALUES ('${patient_id}', '${destination}', ${cost})`;
+
+  try {
+      connection.query(q, (err, result) => {
+          if (err) throw err;
+
+          let newq= `UPDATE patients
+          SET total_cost = total_cost + ${cost}
+          WHERE patient_id = '${patient_id}' `;
+  
+          connection.query(newq, (err, result) => {
+            if (err) throw err;
+
+
+
+          res.redirect("/all_ambulance_record");
+      });
+    });
+
+  } catch (err) {
+      res.status(500).send("Error adding new ambulance record");
+  }
+});
+
+//DELETE
+app.delete("/ambulance/:patient_id", (req, res) => {
+  let { patient_id } = req.params;
+
+  let q1 = `DELETE FROM ambulance WHERE patient_id='${patient_id}'`;
+
+  try {
+      connection.query(q1, (err, result) => {
+          if (err) throw err;
+         
+          res.redirect("/all_ambulance_record");
+      });
+  } catch (err) {
+      res.status(500).send("Error deleting ambulance record");
   }
 });

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="employee_table.css">
+    <title>All Employee List</title>
+    <link rel="stylesheet" href="doctor_table.css">
+</head>
+<body>
+    <header>
+        <h1>ALL EMPLOYEE LIST</h1>
+    </header>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Type</th>
+            <th>Salary</th>
+            <th>Nid</th>
+            <th>Address</th>
+            <th>Contract</th>
+            <th>Edit</th>
+        </tr>
+        <% for(employee of employees) { %>
+            <tr>
+                <td><%= employee.employee_id %></td>
+                <td><%= employee.name %></td>
+                <td><%= employee.phone_num %></td>
+                <td><%= employee.emp_type %></td>
+                <td><%= employee.salary %></td>
+                <td><%= employee.nid %></td>
+                <td><%= employee.address %></td>
+                <td><%= employee.contract %></td>
+                
+                <td>
+                    <form method="get" action="/employee/<%= employee.employee_id %>/edit">
+                        <button>Edit Information</button>
+                    </form>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+    
+    <form method="get" action="/employee/add_new_employee">
+        <button>Add new Employee</button>
+    </form>
+</body>
+</html>

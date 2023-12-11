@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Ambulance Records</title>
+    <link rel="stylesheet" href="doctor_table.css">
+</head>
+<body>
+    <h1>All Ambulance Records</h1>
+    <ul>
+        <% ambulanceRecords.forEach(function(record) { %>
+            <li>
+                Patient ID: <%= record.patient_id %>, Destination: <%= record.destination %>, Cost: <%= record.cost %>
+                <form action="/ambulance/<%= record.patient_id %>/?_method=DELETE" method="POST">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        <% }); %>
+    </ul>
+    <a href="/ambulance/add_new_record">Add New Ambulance Record</a>
+</body>
+</html>

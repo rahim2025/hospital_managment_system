@@ -3,41 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admit Patient</title>
-    <link rel="stylesheet" href="admit_into_room.css">
+    <title>Insert Rooms</title>
+    <!-- Add your stylesheets or other head elements here -->
 </head>
 <body>
 
-<h1>Admit Patient</h1>
+<h1>Insert Rooms</h1>
 
-<form action="/admit_into_room" method="POST">
-    <label for="room_no">Room No:</label>
-    <input type="text" name="room_no" required><br>
-
-    <label for="patient_id">Patient ID:</label>
-    <input type="text" name="patient_id" required><br>
-
-    <label for="doctor_id">Doctor ID:</label>
-    <input type="text" name="doctor_id" required><br>
-
-    <label for="floor_no">Floor No:</label>
-    <input type="text" name="floor_no" required><br>
-
-    <label for="building_no">Building No:</label>
-    <input type="text" name="building_no" required><br>
-
-    
-    <label for="room_type">Room Type:</label>
-    <select name="location_type">
-        <option value="room">Room</option>
-        <option value="cabin">Cabin</option>
-        <option value="operation_theatre">Operation Theatre</option>
-    </select><br>
-
-    <button type="submit">Admit Patient</button>
+<!-- Insert form for Cabins -->
+<form action="/insert-cabin" method="post">
+    <label for="room_no_cabin">Room No:</label>
+    <input type="text" id="room_no_cabin" name="room_no" required>
+    <label for="patient_id_cabin">Patient ID:</label>
+    <input type="text" id="patient_id_cabin" name="patient_id" required>
+    <label for="doctor_id_cabin">Doctor ID:</label>
+    <input type="text" id="doctor_id_cabin" name="doctor_id" required>
+    <label for="cost_cabin">Cost:</label>
+    <input type="text" id="cost_cabin" name="cost" required>
+    <label for="admit_date_cabin">Admit Date:</label>
+    <input type="text" id="admit_date_cabin" name="admit_date" required>
+    <button type="submit">Insert Cabin</button>
 </form>
 
+<!-- Insert form for ICU -->
+<form action="/insert-icu" method="post">
+    <label for="room_no_icu">Room No:</label>
+    <input type="text" id="room_no_icu" name="room_no" required>
+    <label for="patient_id_icu">Patient ID:</label>
+    <input type="text" id="patient_id_icu" name="patient_id" required>
+    <label for="doctor_id_icu">Doctor ID:</label>
+    <input type="text" id="doctor_id_icu" name="doctor_id" required>
+    <label for="cost_icu">Cost:</label>
+    <input type="text" id="cost_icu" name="cost" required>
+    <label for="admit_date_icu">Admit Date:</label>
+    <input type="text" id="admit_date_icu" name="admit_date" required>
+    <button type="submit">Insert ICU Room</button>
+</form>
+
+<!-- Insert form for Operation Theatre -->
+<form action="/insert-operation-room" method="post">
+    <label for="room_no_operation">Room No:</label>
+    <input type="text" id="room_no_operation" name="room_no" required>
+    <label for="patient_id_operation">Patient ID:</label>
+    <input type="text" id="patient_id_operation" name="patient_id" required>
+    <label for="doctor_id_operation">Doctor ID:</label>
+    <input type="text" id="doctor_id_operation" name="doctor_id" required>
+    <label for="cost_operation">Cost:</label>
+    <input type="text" id="cost_operation" name="cost" required>
+    <label for="admit_date_operation">Admit Date:</label>
+    <input type="text" id="admit_date_operation" name="admit_date" required>
+    <button type="submit">Insert Operation Theatre Room</button>
+</form>
 
 </body>
 </html>
+
 
