@@ -421,12 +421,35 @@ app.get("/employees",(req,res) =>{
   try{
       connection.query(q, (err, employees) =>{
           if(err) throw err;
-          res.render("employees.ejs", { employees });
+          res.render("show_all_employee_list.ejs", { employees });
       });
   } catch(err){
       res.status(500).send("Error retrieving nurses");
   }
 });
+
+//---------------Add new Employee-----------------///
+
+app.get("/employee/add_new_employee", (req, res) => {
+  res.render("add_new_employee.ejs");
+});
+
+app.post("/employee/add_new_employee", (req, res) => {
+  let { employee_id, name, emp_type,salary,phone_num,address,date_of_birth,nid, contract } = req.body;
+
+  let q = `INSERT INTO employees (employee_id, name, emp_type, salary, phone_num,address, date_of_birth,nid,contract) 
+           VALUES ('${employee_id}', '${name}', '${emp_type}','${salary}', '${phone_num}','${address}', '${date_of_birth}','${nid}','${contract}')`;
+
+  try {
+      connection.query(q, (err, result) => {
+          if (err) throw err;
+          res.redirect("/employees"); 
+      });
+  } catch (err) {
+      res.send("Error occurred while adding a new employee");
+  }
+});
+
 
 
 //--------ROOM---------//
